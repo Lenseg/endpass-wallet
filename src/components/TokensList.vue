@@ -3,19 +3,14 @@
     class="tokens-list"
     data-test="tokens-list"
   >
-    <ul v-if="selectedTokens && selectedTokens.length">
+    <ul v-if="tokens.length > 0">
       <li
-        v-for="token in selectedTokens"
+        v-for="token in tokens"
         :class="itemClass"
         :key="token.address"
+        data-test="user-token"
       >
-        <v-spinner
-          v-if="isLoading"
-          :is-loading="isLoading"
-          class="spinner"
-        />
         <v-token
-          v-else
           :token="token"
           :currency="currency"
           :price="prices.get(token.symbol)"
@@ -26,7 +21,7 @@
             class="is-inline-block remove-token-button"
             title="Remove Token"
             data-test="delete-button"
-            @click="deleteTokenAndUnsubscribe({token})"
+            @click="deleteToken(token)"
           >
             <span
               class="icon has-text-danger is-small is-pulled-right"
@@ -46,89 +41,90 @@
 </template>
 
 <script>
-import { Token } from '@/class/Token';
 import VToken from '@/components/VToken';
-import VSpinner from '@/components/ui/VSpinner';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import error from '@/mixins/error';
 
-// List of the user's active tokens
 export default {
   props: {
     tokens: {
       type: Array,
-      default: null,
+      default: () => [],
     },
-    // Show remove token button
+
     hasRemove: {
       type: Boolean,
       default: false,
     },
-    // Classes to set on token
+
     itemClass: {
       type: [Object, Array, String],
+      default: '',
     },
   },
-  data() {
-    return {
-      isLoading: true,
-    };
-  },
+
   computed: {
-    // TODO test that user added tokens have balances
-    selectedTokens() {
-      if (Array.isArray(this.tokens)) {
-        return this.tokens;
-      }
-      return this.tokensWithBalance;
-    },
-    // Returns a Map of token symbol to price
-    prices() {
-      return new Map(
-        this.selectedTokens.map(token => [
-          token.symbol,
-          this.getTokenPrice(token.symbol),
-        ]),
-      );
-    },
     ...mapState({
       tokenPrices: state => state.tokens.prices,
       ethPrice: state => state.price.price,
       currency: state => state.user.settings.fiatCurrency,
     }),
-    ...mapGetters('tokens', ['tokensWithBalance']),
+
+    prices() {
+      return new Map(
+        this.tokens.map(token => [
+          token.symbol,
+          this.getTokenPrice(token.symbol),
+        ]),
+      );
+    },
   },
+
   methods: {
-    ...mapActions('tokens', [
-      'updateTokensPrices',
-      'deleteTokenAndUnsubscribe',
-    ]),
-    // Return value of tokens in fiat
+    ...mapActions('tokens', ['getTokensPrices', 'removeUserToken']),
+
+    /**
+     * Returns value of tokens in fiat
+     * @param {String} symbol Token symbol
+     * @returns {String} Token price in fiat
+     */
     getTokenPrice(symbol) {
       const prices = this.tokenPrices[symbol] || {};
+
       return new BigNumber(prices.ETH || 0).times(this.ethPrice).toString();
     },
-    // Get token prices for all tokens
-    async updateTokenPrice() {
-      await this.updateTokensPrices();
-      this.isLoading = false;
+
+    loadTokensPrices() {
+      /**
+       * It needs because list can contain custom tokens list which not belongs to current
+       * user tokens
+       */
+      this.getTokensPrices({
+        tokensSymbols: this.tokens.map(({ symbol }) => symbol),
+      });
+    },
+
+    async deleteToken(token) {
+      await this.removeUserToken({
+        token,
+      });
     },
   },
+
   mounted() {
-    this.updateTokenPrice();
+    if (this.tokens.length > 0) {
+      this.loadTokensPrices();
+    }
   },
+
   mixins: [error],
+
   components: {
     VToken,
-    VSpinner,
   },
 };
 </script>
 
 <style lang="scss">
-.tokens-list {
-  .spinner {
-  }
-}
 </style>

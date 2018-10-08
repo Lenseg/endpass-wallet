@@ -40,18 +40,20 @@ exports[`TokensPage render should render component 1`] = `
                 >
                   <search-input
                     data-test="token-search-input"
-                    v-model="search"
+                    v-model="userTokenQuery"
                   />
                 </div>
                  
                 <v-spinner
                   class="spinner-block"
+                  data-test="tokens-spinner"
                 />
                  
                 <div
                   class="scroller"
                 >
-                  <token-list
+                  <tokens-list
+                    data-test="tokens-list"
                     has-remove="true"
                     item-class="panel-block is-clearfix is-block"
                     tokens="[object Object],[object Object]"

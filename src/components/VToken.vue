@@ -6,8 +6,8 @@
     <div class="media-left">
       <p class="image token-logo is-32x32">
         <img
-          v-if="token.logo"
-          :src="token.logo"
+          v-if="icon"
+          :src="icon"
           :alt="token.name"
         >
         <span
@@ -20,12 +20,11 @@
     </div>
     <div class="media-content">
       <div class="content">
-        <p class="token-title">
-          <span
-            class="token-name"
-            data-test="token-name"
-            v-text="token.name"
-          />
+        <p
+          class="token-title"
+          data-test="token-name"
+        >
+          {{ token.name }}
         </p>
         <slot />
       </div>
@@ -61,40 +60,51 @@
 </template>
 
 <script>
-import { Token } from '@/class/Token';
 import Balance from '@/components/Balance';
 import { BigNumber } from 'bignumber.js';
 
 // Displays details about a single ERC20 token
 export default {
   name: 'VToken',
+
   props: {
     token: {
-      type: Token,
+      type: Object,
       required: true,
     },
+
     // fiat currency
     currency: {
       type: String,
       default: 'USD',
     },
+
     price: {
-      default: 0,
+      type: String,
+      default: '0',
     },
   },
+
   computed: {
     // Return token balance in wei
     amount() {
       let balanceBn;
+
       if (this.token.balance instanceof BigNumber) {
         balanceBn = this.token.balance;
       } else {
         balanceBn = new BigNumber(this.token.balance);
       }
       const decimalsBn = new BigNumber(10).pow(this.token.decimals);
+
       return balanceBn.div(decimalsBn).toString(10);
     },
+
+    icon() {
+      return this.token.logo || this.token.image;
+    },
   },
+
   components: {
     Balance,
   },
@@ -111,8 +121,6 @@ export default {
   .token-title {
     .token-symbol {
       font-weight: 600;
-    }
-    .token-name {
     }
   }
   .balance {

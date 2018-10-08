@@ -2,7 +2,13 @@ import userService from '@/services/user';
 
 jest.mock('@/services/user', () => {
   /* eslint-disable global-require */
-  const { settings, addresses, v3, hdv3 } = require('fixtures/accounts');
+  const {
+    settings,
+    addresses,
+    v3,
+    hdv3,
+    otpSettings,
+  } = require('fixtures/accounts');
 
   const getAccountByAddress = address => {
     if (/^(xpub)/.test(address)) {
@@ -30,6 +36,10 @@ jest.mock('@/services/user', () => {
     getSettings: jest.fn().mockResolvedValue(settings),
 
     setSettings: jest.fn().mockResolvedValue({
+      success: true,
+    }),
+
+    setSetting: jest.fn().mockResolvedValue({
       success: true,
     }),
 
@@ -63,6 +73,12 @@ jest.mock('@/services/user', () => {
     getHDKey: jest.fn().mockResolvedValue(hdv3),
 
     setOtpSettings: jest.fn().mockResolvedValue({
+      success: true,
+    }),
+
+    getOtpSettings: jest.fn().mockResolvedValue(otpSettings),
+
+    loginViaOTP: jest.fn().mockResolvedValue({
       success: true,
     }),
 
