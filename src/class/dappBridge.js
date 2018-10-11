@@ -5,24 +5,18 @@ class DappBridge extends EventEmitter {
   constructor(...props) {
     super(props);
 
-    this.requestHandler = null;
     this.setupEventsHandlers();
   }
 
   setupEventsHandlers() {
     this.on(INPAGE_EVENT.REQUEST, this.handleRequest);
-    this.on(INPAGE_EVENT.SETTINGS, this.handleRequest);
   }
 
-  setRequestHandler(handler) {
-    this.requestHandler = handler;
-  }
-
+  /* eslint-disable */
   handleRequest(payload) {
-    if (this.requestHandler) {
-      this.requestHandler(payload);
-    }
+    console.log('handler request', payload);
   }
+  /* eslint-enable */
 
   emitResponse(payload) {
     this.emit(INPAGE_EVENT.RESPONSE, payload);

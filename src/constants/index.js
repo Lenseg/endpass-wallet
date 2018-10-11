@@ -68,14 +68,10 @@ export const AVAILABLE_USER_META_PROPS = ['activeAccount'];
 export const REQUEST_TIMEOUT_MSEC = 30000;
 
 export const DAPP_WHITELISTED_METHODS = [
-  'personal_sign',
   'eth_personalSign',
   'eth_signTypedData',
   'eth_sendTransaction',
 ];
-
-// export const DAPP_PROXY_URL = 'https://wildproxy-dev.endpass.com';
-export const DAPP_PROXY_URL = 'http://localhost:8080';
 
 export default {
   AVAILABLE_FIAT_CURRENCIES,
@@ -88,5 +84,4 @@ export default {
   AVAILABLE_USER_META_PROPS,
   REQUEST_TIMEOUT_MSEC,
   DAPP_WHITELISTED_METHODS,
-  DAPP_PROXY_URL,
 };

@@ -11,7 +11,6 @@
             class-name="dapp-form-input"
             data-vv-as="Dapp url"
             validator="required"
-            @input="onChangeUrlInput"
             @blur="onBlurUrlInput"
           />
           <!-- |url:require_protocol:true:require_tld:false -->
@@ -20,7 +19,7 @@
           v-if="loading || loaded"
           v-show="loaded"
           ref="dapp"
-          :src="dappUrl"
+          :src="url"
           class="dapp-frame"
           @load="onDappLoad"
         />
@@ -33,80 +32,51 @@
       </div>
     </div>
     <password-modal
-      v-if="currentRequest"
-      title="Opened dapp requests your password"
       @confirm="confirmSign"
       @close="cancelSign"
-    >
-      <transaction-table
-        v-if="isCurrentRequestTransaction"
-        :currency="activeCurrency"
-        :transaction="currentRequest"
-      />
-    </password-modal>
+    />
   </div>
 </template>
 
 <script>
 import { isEmpty, get } from 'lodash';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import VInput from '@/components/ui/form/VInput';
 import PasswordModal from '@/components/modal/PasswordModal';
-import TransactionTable from '@/components/TransactionTable';
 import privatePage from '@/mixins/privatePage';
 
 export default {
   name: 'Dapp',
 
   data: () => ({
-    // url: 'https://www.cryptokitties.co',
-    url: 'https://explorer.bounties.network/explorer',
+    url: '',
     loading: false,
     loaded: false,
     error: null,
   }),
 
   computed: {
-    ...mapState({
-      activeCurrency: state => state.web3.activeCurrency,
-    }),
-    ...mapGetters('dapp', ['currentRequest']),
-
-    isCurrentRequestTransaction() {
-      return this.currentRequest.method === 'eth_sendTransaction';
-    },
-
-    dappUrl() {
-      return `/${this.url}`;
+    currentTransactionToSign() {
+      return this.$store.state.dapp.currentTransactionToSign[0];
     },
   },
 
   methods: {
-    ...mapActions('dapp', [
-      'inject',
-      'reset',
-      'processCurrentRequest',
-      'cancelCurrentRequest',
-    ]),
+    ...mapActions('dapp', ['attach', 'detach', 'sendResponse']),
 
     async loadDapp() {
-      if (isEmpty(this.url) || !isEmpty(this.$validator.errors.items)) return;
+      if (!isEmpty(this.$validator.errors.items)) return;
 
       this.loading = true;
-
-      await this.$nextTick();
-
-      await this.inject(this.$refs.dapp.contentWindow);
     },
 
     onDappLoad() {
       const { dapp } = this.$refs;
 
       try {
-        /**
-         * If contentWindow property is not accessable it should throw error
-         */
-        get(dapp.contentWindow, 'location');
+        get(dapp.contentWindow, 'location.href');
+
+        dapp.contentWindow.endpassDappBridge = window.endpassDappBridge;
 
         this.loaded = true;
       } catch (err) {
@@ -122,29 +92,24 @@ export default {
         this.error = null;
       }
 
-      if (this.dappUrl.replace(/^\//, '') !== this.url || !this.loaded) {
-        this.loadDapp();
-      }
+      this.loadDapp();
     },
 
-    onChangeUrlInput() {
-      if (this.loaded) {
-        this.loaded = false;
-        this.reset();
-      }
+    confirmSign() {
+      // TODO sign transaction and send response
     },
 
-    async confirmSign(password) {
-      await this.processCurrentRequest(password);
-    },
-
-    async cancelSign() {
-      await this.cancelCurrentRequest();
+    cancelSign() {
+      // TODO cancel transaction and send response
     },
   },
 
+  created() {
+    this.attach();
+  },
+
   beforeDestroy() {
-    this.reset();
+    this.detach();
   },
 
   mixins: [privatePage],
@@ -152,7 +117,6 @@ export default {
   components: {
     VInput,
     PasswordModal,
-    TransactionTable,
   },
 };
 </script>
