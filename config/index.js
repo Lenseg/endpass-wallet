@@ -8,16 +8,9 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/proxy': {
-        target: 'https://wildproxy-dev.endpass.com',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/proxy': '',
-        },
-        cookieDomainRewrite: 'localhost',
-      },
-      '/identity/api/v1': {
+    proxyTable: [
+      {
+        context: '/identity/api/v1',
         target: 'https://identity-dev.endpass.com',
         changeOrigin: true,
         pathRewrite: {
