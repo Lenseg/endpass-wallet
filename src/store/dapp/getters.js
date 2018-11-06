@@ -1,4 +1,3 @@
-export default {};
 import { isNil } from 'lodash';
 import { TransactionFactory } from '@/class';
 
