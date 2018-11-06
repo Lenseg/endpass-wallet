@@ -45,49 +45,39 @@ import { mapActions } from 'vuex';
 import VInput from '@/components/ui/form/VInput';
 import PasswordModal from '@/components/modal/PasswordModal';
 import privatePage from '@/mixins/privatePage';
-
 export default {
   name: 'Dapp',
-
   data: () => ({
     url: 'https://www.cryptokitties.co',
     loading: false,
     loaded: false,
     error: null,
   }),
-
   computed: {
     currentTransactionToSign() {
       return this.$store.state.dapp.currentTransactionToSign[0];
     },
-
     dappUrl() {
       return `/${this.url}`;
     },
   },
-
   methods: {
     ...mapActions('dapp', ['inject', 'sendResponse', 'cancelTransaction']),
 
     async loadDapp() {
       if (isEmpty(this.url) || !isEmpty(this.$validator.errors.items)) return;
-
       this.loading = true;
-
       await this.$nextTick();
 
       this.inject(this.$refs.dapp.contentWindow);
     },
-
     onDappLoad() {
       const { dapp } = this.$refs;
-
       try {
         /**
          * If contentWindow property is not accessable it should throw error
          */
         get(dapp.contentWindow, 'location');
-
         this.loaded = true;
       } catch (err) {
         this.error = err;
@@ -96,17 +86,14 @@ export default {
         this.loading = false;
       }
     },
-
     onBlurUrlInput() {
       if (this.error) {
         this.error = null;
       }
-
       if (this.dappUrl.replace(/^\//, '') !== this.url || !this.loaded) {
         this.loadDapp();
       }
     },
-
     onChangeUrlInput() {
       if (this.loaded) {
         this.loaded = false;
@@ -126,7 +113,6 @@ export default {
   },
 
   mixins: [privatePage],
-
   components: {
     VInput,
     PasswordModal,
@@ -139,16 +125,13 @@ export default {
   display: block;
   padding: 10px;
 }
-
 .dapp-form-input {
   width: 100%;
 }
-
 .dapp-frame {
   width: 100%;
   height: 600px;
 }
-
 .dapp-error {
   padding: 10px;
 }
