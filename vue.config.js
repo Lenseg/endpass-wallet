@@ -2,10 +2,7 @@ const utils = require('@endpass/utils/build');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const getEnv = require('./env/getEnv');
-
 const { NODE_ENV } = process.env;
-const ENV = getEnv(NODE_ENV);
 const gitCommitHash = utils.getCommitHash();
 const { mode } = process.VUE_CLI_SERVICE;
 
@@ -32,9 +29,7 @@ module.exports = {
     const config = {
       plugins: [
         new webpack.DefinePlugin({
-          ENV: JSON.stringify(ENV),
           GIT_COMMIT_HASH: JSON.stringify(gitCommitHash),
-          'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         }),
         new HtmlWebpackPlugin({
           filename: './index.html',
@@ -65,17 +60,17 @@ module.exports = {
 
   devServer: {
     proxy: {
-      [ENV.tokenInfoAPIUrl]: {
+      [process.env.VUE_APP_TOKEN_INFO_API_URL]: {
         target: 'https://tokeninfo-dev.endpass.com',
         pathRewrite: {
-          [ENV.tokenInfoAPIUrl]: '/api/v1',
+          [process.env.VUE_APP_TOKEN_INFO_API_URL]: '/api/v1',
         },
         changeOrigin: true,
       },
-      [ENV.cryptoDataAPIUrl]: {
+      [process.env.VUE_APP_CRYPTODATA_API_URL]: {
         target: 'https://cryptodata-dev.endpass.com',
         pathRewrite: {
-          [ENV.cryptoDataAPIUrl]: '/api/v1.1',
+          [process.env.VUE_APP_CRYPTODATA_API_URL]: '/api/v1.1',
         },
         changeOrigin: true,
       },

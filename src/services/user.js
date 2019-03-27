@@ -213,7 +213,7 @@ export default {
       });
 
       if (!success) {
-        throw new Error(`POST ${ENV.identityAPIUrl}/settings/otp: ${message}`);
+        throw new Error(`POST ${process.env.VUE_APP_IDENTITY_API_URL}/settings/otp: ${message}`);
       }
 
       return { success };
@@ -238,7 +238,7 @@ export default {
 
       if (!success) {
         throw new Error(
-          `DELETE ${ENV.identityAPIUrl}/settings/otp: ${message}`,
+          `DELETE ${process.env.VUE_APP_IDENTITY_API_URL}/settings/otp: ${message}`,
         );
       }
 

@@ -18,16 +18,16 @@ Vue.use(Notifications);
 Vue.use(validation);
 Vue.use(directives);
 Vue.use(FaucetComponets);
-
+console.log(process.env)
 Vue.use(VueAnalytics, {
-  id: ENV.googleAnalyticsId,
+  id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
   router,
   debug: {
-    sendHitTask: ENV.isProduction,
+    sendHitTask: process.env.VUE_APP_IS_PRODUCTION,
   },
 });
 
-Vue.use(Intercom, { appId: ENV.intercomAppId });
+Vue.use(Intercom, { appId: process.env.VUE_APP_INTERCOM_APP_ID });
 Vue.use(UIComponents);
 
 /* eslint-disable no-new */
@@ -38,7 +38,7 @@ const app = new Vue({
   render: h => h(App),
 });
 
-if (!ENV.isProduction) {
+if (!process.env.VUE_APP_IS_PRODUCTION) {
   window.app = app;
 }
 

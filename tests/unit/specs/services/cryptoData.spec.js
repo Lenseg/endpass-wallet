@@ -17,7 +17,7 @@ describe('Crypto data service', () => {
 
   describe('getGasPrice', () => {
     const networkId = 1;
-    const requestUrl = `${ENV.cryptoDataAPIUrl}/${networkId}/gas/price`;
+    const requestUrl = `${process.env.VUE_APP_CRYPTODATA_API_URL}/${networkId}/gas/price`;
     const expectedError = new NotificationError({
       title: 'Failed to get suggested gas price',
       text:
@@ -71,7 +71,7 @@ describe('Crypto data service', () => {
   });
 
   describe('getSymbolsPrices', () => {
-    const requestUrl = `${ENV.cryptoDataAPIUrl}/price`;
+    const requestUrl = `${process.env.VUE_APP_CRYPTODATA_API_URL}/price`;
     const fromSymbols = ['ETH', 'BTC'];
     const toSymbol = 'USD';
     const priceMultiResponse = priceMulti;
@@ -209,7 +209,7 @@ describe('Crypto data service', () => {
   describe('getAccountBalance', () => {
     const networkId = 1;
     const requestUrl = `${
-      ENV.cryptoDataAPIUrl
+      process.env.VUE_APP_CRYPTODATA_API_URL
     }/${networkId}/balance/${address}`;
     const tokens = [
       {
@@ -311,7 +311,7 @@ describe('Crypto data service', () => {
     const address = 'address';
     const filterId = 1;
     const requestUrl = `${
-      ENV.cryptoDataAPIUrl
+      process.env.VUE_APP_CRYPTODATA_API_URL
     }/${network}/transactions/pending`;
     const expectedError = new Error(
       'Failed to get pending transactions. An error occurred while getting pending transactions.',

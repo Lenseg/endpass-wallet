@@ -86,7 +86,7 @@ describe('connection-status actions', () => {
       expect(setTimeout).toHaveBeenCalledTimes(1);
       expect(setTimeout).toHaveBeenLastCalledWith(
         expect.any(Function),
-        ENV.blockUpdateInterval,
+        process.env.VUE_APP_BLOCK_UPDATE_INTERVAL,
       );
       jest.runAllTimers();
       expect(dispatch).toHaveBeenCalledWith('subscribeOnSyncStatus');
@@ -99,7 +99,7 @@ describe('connection-status actions', () => {
         expect(setTimeout).toHaveBeenCalledTimes(1);
         expect(setTimeout).toHaveBeenLastCalledWith(
           expect.any(Function),
-          ENV.blockUpdateInterval,
+          process.env.VUE_APP_BLOCK_UPDATE_INTERVAL,
         );
         jest.runAllTimers();
         expect(dispatch).toHaveBeenCalledWith('subscribeOnSyncStatus');
@@ -116,7 +116,7 @@ describe('connection-status actions', () => {
       expect(commit).toHaveBeenCalledWith(SET_WEB3_CONNECTION_STATUS, false);
       expect(setTimeout).toHaveBeenLastCalledWith(
         expect.any(Function),
-        ENV.blockUpdateInterval,
+        process.env.VUE_APP_BLOCK_UPDATE_INTERVAL,
       );
       expect(dispatch).toHaveBeenCalledTimes(2);
       expect(dispatch).toHaveBeenNthCalledWith(1, 'errors/emitError', err, {

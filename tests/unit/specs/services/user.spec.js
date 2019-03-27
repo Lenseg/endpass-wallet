@@ -16,7 +16,7 @@ describe('User service', () => {
   });
 
   describe('getSettings', () => {
-    const url = `${ENV.identityAPIUrl}/settings`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/settings`;
     const successResp = {
       fiatCurrency: 'USD',
     };
@@ -49,7 +49,7 @@ describe('User service', () => {
     const settings = {
       fiatCurrency: 'USD',
     };
-    const url = `${ENV.identityAPIUrl}/settings`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/settings`;
 
     it('should make correct request', async () => {
       expect.assertions(3);
@@ -80,7 +80,7 @@ describe('User service', () => {
     const net = 1;
     const address = 'address';
     const token = { address };
-    const url = `${ENV.identityAPIUrl}/tokens/${net}/${address}`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/tokens/${net}/${address}`;
 
     describe('addToken', () => {
       it('should make correct request', async () => {
@@ -155,7 +155,7 @@ describe('User service', () => {
   describe('Networks', () => {
     const netUrl = 'address';
     const network = { url: netUrl };
-    const url = `${ENV.identityAPIUrl}/networks/${netUrl}`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/networks/${netUrl}`;
 
     describe('addNetwork', () => {
       it('should make correct request', async () => {
@@ -194,7 +194,7 @@ describe('User service', () => {
 
     describe('updateNetwork', () => {
       const oldUrl = 'old';
-      const urlForUpdate = `${ENV.identityAPIUrl}/networks/${oldUrl}`;
+      const urlForUpdate = `${process.env.VUE_APP_IDENTITY_API_URL}/networks/${oldUrl}`;
 
       it('should make correct request', async () => {
         expect.assertions(2);
@@ -266,7 +266,7 @@ describe('User service', () => {
   });
 
   describe('getAccounts', () => {
-    const url = `${ENV.identityAPIUrl}/accounts`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/accounts`;
     const successResp = ['0x123', 'xpub1234'];
 
     it('should make correct request', async () => {
@@ -296,7 +296,7 @@ describe('User service', () => {
 
   describe('getAccount', () => {
     const address = '0x456';
-    const url = `${ENV.identityAPIUrl}/account/${address}`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/account/${address}`;
     const shortAcc = address.replace(/^(.{5}).+/, '$1…');
     const successResp = {};
     const expectedError = new NotificationError({
@@ -345,7 +345,7 @@ describe('User service', () => {
     const address = '0x123';
     // Account data can be anything
     const account = { version: 3, crypto: {} };
-    const url = `${ENV.identityAPIUrl}/account/${address}`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/account/${address}`;
 
     it('should make correct request', async () => {
       expect.assertions(3);
@@ -365,7 +365,7 @@ describe('User service', () => {
   describe('setAccountInfo', () => {
     const address = '0x123';
     // Account data can be anything
-    const url = `${ENV.identityAPIUrl}/account/${address}/info`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/account/${address}/info`;
     const info = { one: 'two' };
 
     it('should make correct request', async () => {
@@ -383,7 +383,7 @@ describe('User service', () => {
   });
 
   describe('updateAccounts', () => {
-    const url = `${ENV.identityAPIUrl}/accounts`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/accounts`;
     const accounts = {
       'address 1': {},
       'address 2': {},
@@ -437,9 +437,9 @@ describe('User service', () => {
     it('should return keystores for regular accounts only', async () => {
       expect.assertions(3);
 
-      axiosMock.onGet(`${ENV.identityAPIUrl}/accounts`).reply(200, addrs);
+      axiosMock.onGet(`${process.env.VUE_APP_IDENTITY_API_URL}/accounts`).reply(200, addrs);
       axiosMock
-        .onGet(new RegExp(`${ENV.identityAPIUrl}/account/.+`))
+        .onGet(new RegExp(`${process.env.VUE_APP_IDENTITY_API_URL}/account/.+`))
         .reply(200, {});
 
       const accounts = await userService.getV3Accounts();
@@ -453,9 +453,9 @@ describe('User service', () => {
     it('should return the HD key if it exists', async () => {
       expect.assertions(2);
 
-      axiosMock.onGet(`${ENV.identityAPIUrl}/accounts`).reply(200, addrs);
+      axiosMock.onGet(`${process.env.VUE_APP_IDENTITY_API_URL}/accounts`).reply(200, addrs);
       axiosMock
-        .onGet(new RegExp(`${ENV.identityAPIUrl}/account/.+`))
+        .onGet(new RegExp(`${process.env.VUE_APP_IDENTITY_API_URL}/account/.+`))
         .reply(200, {});
 
       const account = await userService.getHDKey();
@@ -470,12 +470,12 @@ describe('User service', () => {
       const mainAddress = 'xpub12345';
       const addresses = [...addrs, mainAddress];
 
-      axiosMock.onGet(`${ENV.identityAPIUrl}/accounts`).reply(200, addresses);
+      axiosMock.onGet(`${process.env.VUE_APP_IDENTITY_API_URL}/accounts`).reply(200, addresses);
       axiosMock
-        .onGet(`${ENV.identityAPIUrl}/account/${mainAddress}/info`)
+        .onGet(`${process.env.VUE_APP_IDENTITY_API_URL}/account/${mainAddress}/info`)
         .reply(200, { type: WALLET_TYPES.HD_MAIN });
       axiosMock
-        .onGet(new RegExp(`${ENV.identityAPIUrl}/account/.+`))
+        .onGet(new RegExp(`${process.env.VUE_APP_IDENTITY_API_URL}/account/.+`))
         .reply(200, {});
 
       const account = await userService.getHDKey();
@@ -486,7 +486,7 @@ describe('User service', () => {
   });
 
   describe('getOtpSettings', () => {
-    const url = `${ENV.identityAPIUrl}/settings/otp`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/settings/otp`;
     const successResp = {
       secret: 'abc',
     };
@@ -533,7 +533,7 @@ describe('User service', () => {
   });
 
   describe('setOtpSettings', () => {
-    const url = `${ENV.identityAPIUrl}/settings/otp`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/settings/otp`;
     const secret = 'secret';
     const code = 'code';
     const expectedError = new NotificationError({
@@ -600,7 +600,7 @@ describe('User service', () => {
   });
 
   describe('deleteOtpSettings', () => {
-    const url = `${ENV.identityAPIUrl}/settings/otp`;
+    const url = `${process.env.VUE_APP_IDENTITY_API_URL}/settings/otp`;
     const code = 'code';
     const expectedError = new NotificationError({
       title: 'Error removing two-factor authentication settings',

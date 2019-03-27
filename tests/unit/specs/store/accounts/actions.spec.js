@@ -1097,7 +1097,10 @@ describe('Accounts actions', () => {
       expect(keystore.encryptHDWallet).toBeCalledWith(
         payload.password,
         payload.hdWallet,
-        ENV.kdfParams,
+        {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+},
       );
     });
 
@@ -1128,12 +1131,18 @@ describe('Accounts actions', () => {
         ],
       };
 
-      const res = await actions.encryptWallets(null, payload, ENV.kdfParams);
+      const res = await actions.encryptWallets(null, payload, {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+});
 
       expect(keystore.encryptWallet).toBeCalledWith(
         payload.password,
         payload.wallets[0],
-        ENV.kdfParams,
+        {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+},
       );
       expect(res).toEqual(payload.wallets);
     });

@@ -100,7 +100,10 @@ const addWalletWithPrivateKey = async (
     const wallet = EthWallet.fromPrivateKey(
       Buffer.from(privateKey.replace(/^0x/, ''), 'hex'),
     );
-    const v3KeyStore = keystore.encryptWallet(password, wallet, ENV.kdfParams);
+    const v3KeyStore = keystore.encryptWallet(password, wallet, {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+});
 
     return dispatch('addWalletAndSelect', v3KeyStore);
   } catch (e) {
@@ -129,7 +132,10 @@ const generateWallet = async ({ dispatch, state }, password) => {
   const decryptedHdWallet = await dispatch('decryptAccountHdWallet', password);
   const i = Object.keys(state.wallets).length;
   const wallet = decryptedHdWallet.deriveChild(i).getWallet();
-  const v3KeyStore = keystore.encryptWallet(password, wallet, ENV.kdfParams);
+  const v3KeyStore = keystore.encryptWallet(password, wallet, {
+    kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+    n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+  });
 
   await dispatch('addWalletAndSelect', v3KeyStore);
 };
@@ -151,12 +157,15 @@ const addHdWallet = async ({ dispatch }, { key, password }) => {
   try {
     const seed = Bip39.mnemonicToSeed(key);
     const hdKey = HDKey.fromMasterSeed(seed);
-    const hdWallet = hdKey.derivePath(ENV.hdKeyMnemonic.path);
+    const hdWallet = hdKey.derivePath(process.env.VUE_APP_HD_KEY_MNEMONIC_PATH);
     // Encrypt extended private key
     const v3KeyStore = keystore.encryptHDWallet(
       password,
       hdWallet,
-      ENV.kdfParams,
+      {
+        kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+        n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+      },
     );
     const info = {
       address: v3KeyStore.address,
@@ -193,9 +202,13 @@ const addHdChildWallets = async (
       });
     }
 
-    const v3KeyStoreChild = wallet.toV3(Buffer.from(password), ENV.kdfParams);
+    const v3KeyStoreChild = wallet.toV3(Buffer.from(password), {
+      kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+      n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+    });
     dispatch('addWalletAndSelect', v3KeyStoreChild);
   } catch (e) {
+    console.log(e, 'kekchpok')
     return dispatch('errors/emitError', e, { root: true });
   }
 };
@@ -204,12 +217,15 @@ const addHdPublicWallet = async ({ commit, dispatch }, { key, password }) => {
   try {
     const seed = Bip39.mnemonicToSeed(key);
     const hdKey = HDKey.fromMasterSeed(seed);
-    const hdWallet = hdKey.derivePath(ENV.hdKeyMnemonic.path);
+    const hdWallet = hdKey.derivePath(process.env.VUE_APP_HD_KEY_MNEMONIC_PATH);
 
     const v3KeyStore = keystore.encryptHDWallet(
       password,
       hdWallet,
-      ENV.kdfParams,
+      {
+        kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+        n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+      },
     );
 
     const info = {
@@ -387,9 +403,15 @@ const decryptAccountWallets = async ({ state }, password) => Object.values(state
   .filter(item => !item.isPublic && !item.isHardware)
   .map(item => keystore.decryptWallet(password, item.v3));
 
-const encryptHdWallet = async (ctx, { password, hdWallet }) => (hdWallet ? keystore.encryptHDWallet(password, hdWallet, ENV.kdfParams) : null);
+const encryptHdWallet = async (ctx, { password, hdWallet }) => (hdWallet ? keystore.encryptHDWallet(password, hdWallet, {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+}) : null);
 
-const encryptWallets = async (ctx, { password, wallets = [] }) => wallets.map(item => keystore.encryptWallet(password, item, ENV.kdfParams));
+const encryptWallets = async (ctx, { password, wallets = [] }) => wallets.map(item => keystore.encryptWallet(password, item, {
+  kdf: process.env.VUE_APP_KDF_PARAMS_KDF,
+  n: parseInt(process.env.VUE_APP_KDF_PARAMS_N)
+}));
 
 const reencryptAllAccountWallets = async (
   { dispatch },

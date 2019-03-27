@@ -79,7 +79,7 @@ describe('price actions', () => {
 
       expect(setInterval).toHaveBeenCalledWith(
         expect.any(Function),
-        ENV.priceUpdateInterval,
+        process.env.VUE_APP_PRICE_UPDATE_INTERVAL,
       );
       expect(dispatch).toHaveBeenCalledWith('updatePrice');
       expect(commit.mock.calls[0][0]).toBe(SET_INTERVAL_ID);

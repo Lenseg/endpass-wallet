@@ -1,5 +1,3 @@
-const ENV = require('./env/test.env');
-
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'vue', 'ts', 'tsx', 'jsx', 'node'],
   moduleNameMapper: {
@@ -14,10 +12,6 @@ module.exports = {
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest',
     '.+\\.(css|styl|less|sass|scss|png|jpe?g|ttf|woff2?|svg)$':
       'jest-transform-stub',
-  },
-  // globals as webpack DefinePlugin mocks
-  globals: {
-    ENV,
   },
   // TODO: check usage (@endpass/class) after update to vue-cli3
   transformIgnorePatterns: ['node_modules/(?!(vue-timers|@endpass/class))'],

@@ -17,7 +17,7 @@ describe('Identity mode service', () => {
   });
 
   describe('setIdentityMode', () => {
-    const url = ENV.identityAPIUrl;
+    const url = process.env.VUE_APP_IDENTITY_API_URL;
     const type = IDENTITY_MODE.CUSTOM;
     const mode = { type, serverUrl: url };
 
